@@ -2,23 +2,21 @@
 // programmatically setting icon
 const canvas = new OffscreenCanvas(16, 16);
 const context = canvas.getContext('2d');
+
 context.clearRect(0, 0, 16, 16);
-context.fillStyle = '#00FF00';  // Green
+context.fillStyle = '#00FF00'; // Green
 context.fillRect(0, 0, 16, 16);
+
 const imageData = context.getImageData(0, 0, 16, 16);
-chrome.action.setIcon({
-  imageData: imageData
-});
+chrome.action.setIcon({ imageData });
 
-// prompt for possible duplicate download
+// always overwrite duplicate downloads
 chrome.downloads.onDeterminingFilename.addListener((downloadItem, suggest) => {
-  const { filename } = downloadItem;
-
   suggest({
-    conflictAction: 'overwrite',
-    filename: filename
+    conflictAction: 'overwrite'
   });
 
-  return true;
-})
+  return true; // required for async handling
+});
+
 
